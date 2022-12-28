@@ -73,10 +73,15 @@ app.MapGet("/reviews", async (ReviewContext ctx,[FromQuery(Name = "id")] int? id
     return await ctx.Reviews.Where(r => r.productId == id).ToListAsync();
 });
 
-app.MapGet("/reviews/{id}", [Authorize] async (ReviewContext ctx, int id) =>
+app.MapGet("/allreviews", async (ReviewContext ctx) =>
 {
-    return await ctx.Reviews.FindAsync(id);
+    return await ctx.Reviews.ToListAsync();
 });
+
+//app.MapGet("/reviews/{id}", [Authorize] async (ReviewContext ctx, int id) =>
+//{
+//    return await ctx.Reviews.FindAsync(id);
+//});
 
 //app.UseAuthorization();
 
