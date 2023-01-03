@@ -23,7 +23,7 @@ builder.Services.AddDbContext<ReviewContext>(options =>
     }
     else
     {
-        var ps = builder.Configuration.GetConnectionString("ReviewContext");
+        var ps = builder.Configuration.GetConnectionString("ReviewsContext");
         options.UseSqlServer(ps);
     }
 });
