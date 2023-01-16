@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Transactions;
+using System.Xml.Linq;
 using ThAmCo.Reviews.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -73,10 +74,37 @@ app.MapGet("/reviews", async (ReviewContext ctx,[FromQuery(Name = "id")] int? id
     return await ctx.Reviews.Where(r => r.productId == id).ToListAsync();
 });
 
+app.MapGet("/reviews/{id}", async (ReviewContext ctx, int? id) =>
+{
+    return await ctx.Reviews.FindAsync(id);
+});
+
 app.MapGet("/allreviews", async (ReviewContext ctx) =>
 {
     return await ctx.Reviews.ToListAsync();
 });
+
+app.MapDelete("/reviews/{id}", async (ReviewContext ctx, int id) =>
+{
+    var review = await ctx.Reviews.FindAsync(id);
+    ctx.Reviews.Remove(review);
+    ctx.SaveChanges();
+    return responseMessage;
+});
+
+app.MapPut("/reviews/{id}", async (ReviewContext ctx, Review review, int id) =>
+{
+    var reviewToUpdate= await ctx.Reviews.FindAsync(id);
+    reviewToUpdate.Title = review.Title;
+    reviewToUpdate.firstName = review.firstName;
+    reviewToUpdate.productReviewRating = review.productReviewRating;
+    reviewToUpdate.productReviewContent = review.productReviewContent;
+
+    await ctx.SaveChangesAsync();
+
+    return Results.Ok(reviewToUpdate);
+});
+
 
 //app.MapGet("/reviews/{id}", [Authorize] async (ReviewContext ctx, int id) =>
 //{
